@@ -13,7 +13,6 @@ RUN mkdir -p /opt/kafka/plugins
 COPY --chmod=+x ./kafka-connect/plugins.sh .
 RUN ./plugins.sh
 
-
 # Copy entrypoint script and make it executable
 COPY --chmod=+x ./kafka-connect/entrypoint.sh .
 RUN ./entrypoint.sh
