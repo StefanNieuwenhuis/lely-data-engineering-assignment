@@ -1,8 +1,8 @@
 services:
-  apache-kafka:
+  kafka:
     image: apache/kafka:3.9.1
-    container_name: apache-kafka
-    hostname: apache-kafka
+    container_name: kafka
+    hostname: kafka
     ports:
       - "9092:9092"
     environment:
@@ -19,15 +19,61 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_NUM_PARTITIONS: 3
     healthcheck:
-      test: ["CMD", "kafka-topics", "--list", "--bootstrap-server", "localhost:9092"]
+      test: ["CMD-SHELL", "timeout 3 bash -c '</dev/tcp/localhost/9092' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    volumes:
+      - kafka_data:/var/lib/kafka
+    networks:
+      - kafka_net
+      - shared
+
+  kafka-connect:
+    build:
+      context: .
+      dockerfile: ./kafka-connect/Dockerfile
+    image: kafka-connect
+    container_name: kafka-connect
+    hostname: kafka-connect
+    depends_on:
+      kafka:
+        condition: service_healthy
+    ports:
+      - 8083:8083
+    env_file:
+      - .env
+    environment:
+      BOOTSTRAP_SERVERS: kafka:9092
+      REST_ADVERTISED_HOST_NAME: connect
+      REST_PORT: 8083
+      GROUP_ID: compose-connect-group
+      CONFIG_STORAGE_TOPIC: docker-connect-configs
+      OFFSET_STORAGE_TOPIC: docker-connect-offsets
+      STATUS_STORAGE_TOPIC: docker-connect-status
+      KEY_CONVERTER: "org.apache.kafka.connect.storage.StringConverter"
+      VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      STATUS_STORAGE_REPLICATION_FACTOR: 1
+      CONNECTOR_CLIENT_CONFIG_OVERRIDE_POLICY: All
+      CONNECT_PLUGIN_PATH: "/opt/kafka/plugins,/opt/kafka/custom-plugins"
+    healthcheck:
+      test: [ "CMD", "curl", "--silent", "--fail", "http://connect:8083/connectors || exit 1" ]
       interval: 30s
       retries: 5
       timeout: 10s
     volumes:
-      - kafka_data:/var/lib/kafka
+      - kafka_connect_data:/data
+      - ./custom-plugins:/opt/kafka/custom-plugins
+    networks:
+      - kafka_net
+      - shared
 
 volumes:
   kafka_data:
+  kafka_connect_data:
 
 networks:
   kafka_net:
