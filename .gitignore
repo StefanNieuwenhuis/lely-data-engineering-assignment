@@ -3,3 +3,9 @@
 
 # Editor configurations
 .idea/
+
+# Python
+__pycache__
+
+# Python test
+.pytest_cache/

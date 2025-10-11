@@ -40,7 +40,7 @@ services:
       kafka:
         condition: service_healthy
     ports:
-      - 8083:8083
+      - "8083:8083"
     env_file:
       - .env
     environment:
@@ -124,13 +124,89 @@ services:
       - cassandra_net
       - shared
 
+  spark-master:
+    build:
+      context: .
+      dockerfile: ./spark/Dockerfile
+    image: spark-image
+    container_name: spark-master
+    hostname: spark-master
+    ports:
+      - '8080:8080' # Spark master Web UI
+      - '7077:7077' # For spark-node-to-spark-node queries
+      - '4040:4040' # Spark worker data
+    env_file:
+      - .env
+      - ./spark/.env.spark
+    entrypoint: [ './entrypoint.sh', 'master' ]
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080 || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - ./spark/scripts:/opt/spark/scripts
+      - spark_data:/opt/spark/data
+      - spark_logs:/opt/spark/spark-events
+      - spark_warehouse:/opt/spark/warehouse
+    networks:
+      - spark_net
+      - shared
+
+  spark-worker:
+    image: spark-image
+    container_name: spark-worker
+    hostname: spark-worker
+    depends_on:
+      spark-master:
+        condition: service_healthy
+    env_file:
+      - .env
+      - ./spark/.env.spark
+    entrypoint: [ './entrypoint.sh', 'worker' ]
+    volumes:
+      - ./spark/scripts:/opt/spark/scripts
+      - spark_data:/opt/spark/data
+      - spark_logs:/opt/spark/spark-events
+      - spark_warehouse:/opt/spark/warehouse
+    networks:
+      - spark_net
+      - shared
+
+  spark-history-server:
+    image: spark-image
+    container_name: spark-history
+    hostname: spark-history
+    depends_on:
+      spark-master:
+        condition: service_healthy
+    ports:
+      - "18080:18080"
+    env_file:
+      - .env
+      - ./spark/.env.spark
+    entrypoint: [ './entrypoint.sh', 'history' ]
+    volumes:
+      - ./spark/scripts:/opt/spark/scripts
+      - spark_data:/opt/spark/data
+      - spark_logs:/opt/spark/spark-events
+      - spark_warehouse:/opt/spark/warehouse
+    networks:
+      - spark_net
+      - shared
+
+
 volumes:
   cassandra_data:
   kafka_data:
   kafka_connect_data:
+  spark_data:
+  spark_logs:
+  spark_warehouse:
 
 networks:
   kafka_net:
   cassandra_net:
+  spark_net:
   shared:
     driver: bridge
