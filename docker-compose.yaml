@@ -90,11 +90,47 @@ services:
       - kafka_net
       - shared
 
+  cassandra:
+    image: cassandra:4.1
+    container_name: cassandra
+    hostname: cassandra
+    ports:
+      - "9042:9042"
+    environment:
+      CASSANDRA_START_RPC: "false"
+      CASSANDRA_ENDPOINT_SNITCH: "SimpleSnitch"
+    healthcheck:
+      test: [ "CMD-SHELL", "cqlsh -e 'DESCRIBE KEYSPACES;' || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - cassandra_data:/var/lib/cassandra
+    networks:
+      - cassandra_net
+      - shared
+
+  cassandra-init:
+    image: cassandra:4.1
+    container_name: cassandra-init
+    hostname: cassandra-init
+    depends_on:
+      cassandra:
+        condition: service_healthy
+    entrypoint: ["bash", "-c", "cqlsh cassandra -f /init.cql"]
+    volumes:
+      - ./cassandra/init.cql:/init.cql
+    networks:
+      - cassandra_net
+      - shared
+
 volumes:
+  cassandra_data:
   kafka_data:
   kafka_connect_data:
 
 networks:
   kafka_net:
+  cassandra_net:
   shared:
     driver: bridge
