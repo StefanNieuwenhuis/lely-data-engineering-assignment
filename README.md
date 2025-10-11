@@ -13,7 +13,8 @@ Monitor activities happening on GitHub
 
 ## Services
 
-| service                         | address[:port] | docs |
-|---------------------------------|----------------|------|
-| Apache Kafka (inside container) | kafka:9092     | [README.md](kafka/README.md) |
+| service                         | address[:port]     | docs                                 |
+|---------------------------------|--------------------|--------------------------------------|
+| Apache Kafka (inside container) | kafka:9092         | [README.md](kafka/README.md)         |
+| Kafka Connect (custom)          | kafka-connect:8083 | [README.md](kafka-connect/README.md) |
 
