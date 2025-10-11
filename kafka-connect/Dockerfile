@@ -10,12 +10,13 @@ EXPOSE 8083
 RUN mkdir -p /opt/kafka/plugins
 
 # Copy and run plugin installation script
-COPY plugins.sh .
-RUN chmod +x plugins.sh && ./plugins.sh
+COPY --chmod=+x ./kafka-connect/plugins.sh .
+RUN ./plugins.sh
+
 
 # Copy entrypoint script and make it executable
-COPY entrypoint.sh .
-RUN chmod +x entrypoint.sh
+COPY --chmod=+x ./kafka-connect/entrypoint.sh .
+RUN ./entrypoint.sh
 
 # Use entrypoint
 ENTRYPOINT ["./entrypoint.sh"]
