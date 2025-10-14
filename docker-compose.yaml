@@ -99,6 +99,8 @@ services:
     environment:
       CASSANDRA_START_RPC: "false"
       CASSANDRA_ENDPOINT_SNITCH: "SimpleSnitch"
+      MAX_HEAP_SIZE: 2G
+      HEAP_NEWSIZE: 512M
     healthcheck:
       test: [ "CMD-SHELL", "cqlsh -e 'DESCRIBE KEYSPACES;' || exit 1" ]
       interval: 10s
@@ -138,6 +140,8 @@ services:
     env_file:
       - .env
       - ./spark/.env.spark
+    environment:
+      PYTHONPATH: /opt/spark/app
     entrypoint: [ './entrypoint.sh', 'master' ]
     healthcheck:
       test: [ "CMD-SHELL", "wget -qO- http://localhost:8080 || exit 1" ]
@@ -146,6 +150,7 @@ services:
       retries: 10
     volumes:
       - ./spark/scripts:/opt/spark/scripts
+      - ./spark/app:/opt/spark/app
       - spark_data:/opt/spark/data
       - spark_logs:/opt/spark/spark-events
       - spark_warehouse:/opt/spark/warehouse
@@ -163,9 +168,12 @@ services:
     env_file:
       - .env
       - ./spark/.env.spark
+    environment:
+      PYTHONPATH: /opt/spark/app
     entrypoint: [ './entrypoint.sh', 'worker' ]
     volumes:
       - ./spark/scripts:/opt/spark/scripts
+      - ./spark/app:/opt/spark/app
       - spark_data:/opt/spark/data
       - spark_logs:/opt/spark/spark-events
       - spark_warehouse:/opt/spark/warehouse
