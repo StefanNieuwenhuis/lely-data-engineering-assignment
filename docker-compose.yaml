@@ -203,6 +203,26 @@ services:
       - spark_net
       - shared
 
+  fast-api:
+    build:
+      context: .
+      dockerfile: ./fastapi/Dockerfile
+    image: fastapi-image
+    container_name: fastapi
+    hostname: fastapi
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - ./fastapi/app:/opt/fastapi/app
+    networks:
+      - shared
 
 volumes:
   cassandra_data:
