@@ -10,7 +10,7 @@ def spark_session():
     """
     spark_session = (
         SparkSession.builder
-        .appName("pytest-spark")
+        .appName("GitHubEventStreamProcessor")
         .master("local[2]")                             # run with 2 threads
         .config("spark.sql.shuffle.partitions", "2")
         .getOrCreate()
