@@ -9,7 +9,7 @@
     "http.poll.interval.ms": "${KAFKA_CONNECT_POLL_INTERVAL_MS}",
     "http.connect.timeout.ms": "${KAFKA_CONNECT_HTTP_TIMEOUT_MS}",
     "http.read.timeout.ms": "${KAFKA_CONNECT_HTTP_READ_TIMEOUT_MS}",
-    "topic": "${KAFKA_TOPIC}",
+    "topic": "${KAFKA_TOPIC_NAME}",
     "http.method": "${KAFKA_CONNECT_HTTP_METHOD}",
     "http.auth.bearer": "${GITHUB_AUTH_TOKEN_CLASSIC}",
     "value.converter": "org.apache.kafka.connect.storage.StringConverter",

@@ -1,5 +1,29 @@
 # Apache Spark
 
+## Mathematics behind "average time between pull requests"
+
+### Defining the data
+
+PR creation events for a repository $R$ is a **time series** of timestamps $T_1,T_2,T_3,\dots,T_n$, where each $T_i$ is the time a pull request is opened. We assume they are ordered such that $T_1<T_2<T_3<\dots<T_n$.
+
+### Inter-arrival times
+
+We define **inter-arrival times** - i.e. the time gaps between consecutive PRs as $\Delta_i=T_i-T_{i-1}$, where $i=2,3,\dots,n$.
+So if PRs were opened at 10:00, 10:02, 10:08, 10:11, $\Delta_2 = $2 min, $\Delta_3 = $6 min, and $\Delta_4 = $3 min.
+
+### Average inter-arrival times
+
+The **empirical inter-arrival times** between PRs is: $\bar{\Delta} = \frac{1}{n-1}\sum\limits^n_{i=2}(T_i-T_{i-1})$, which simplifies to: $\bar{\Delta} = \frac{T_n-T_1}{n-1}$ - i.e. total elapsed time over the number of intervals.
+
+**Interpretation**: Say that a repository has 11 PRs over the span of 10 days, then the average time between PRs is: $\frac{10\;days}{10} = 1$ day. 
+
+### Streaming approximation
+
+In streaming, the full history (i.e. $T_1, T_2, T_3, \dots, T_n$) is unavailable, so approximation using **event rate** over a time window $W$ of duration $|W|$ seconds is required: $AvgInterval(R,W)\approx\frac{|W|}{N_{R,W}}$, where $N_{R,W}$ is the number of PR Events for repository $R$ in window $W$.
+
+If there are, for example, 10 PRs in 5 minutes, the average interval $\approx$ 30 seconds.
+If there are 2 PRs in 10 minutes, the average interval $\approx$ 300 seconds.
+
 ## Environment variables
 
 | Name | Description| Required | Example value                                           |

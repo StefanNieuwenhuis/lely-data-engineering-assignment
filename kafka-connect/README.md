@@ -1,5 +1,13 @@
 # Apache Kafka Connect
 
+## Commands
+
+### Check topic ingestion 
+
+```bash
+docker exec -it -w /opt/kafka/bin kafka sh ./kafka-console-consumer.sh --topic github-events --from-beginning --bootstrap-server kafka:9092
+```
+
 ## Environment variables
 
 | Name | Description| Required | Example value |
