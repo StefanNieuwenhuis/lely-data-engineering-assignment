@@ -33,7 +33,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(APP_NAME)
 
 def main():
-    # Intialize a new Spark Session
+    # Initialize a new Spark Session
     spark_session = build_spark_session(APP_NAME, SPARK_MASTER_SERVER, CASSANDRA_CONNECTION_HOST)
 
     # Read Kafka Stream
