@@ -3,7 +3,7 @@ import logging
 from cassandra.cluster import Session
 from fastapi import APIRouter, Depends, HTTPException
 
-from src.models.avg_pr_interval_model import AvgPrIntervalModel
+from src.models import AvgPrIntervalModel
 from src.database import get_cassandra_session
 
 log = logging.getLogger(__name__)

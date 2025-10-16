@@ -2,7 +2,6 @@ from datetime import datetime, timezone, timedelta
 
 import pytest
 
-
 from main import app
 from src.database import CassandraConnection
 from src.config import CASSANDRA_KEYSPACE
@@ -10,11 +9,12 @@ from src.config import CASSANDRA_KEYSPACE
 TEST_CASSANDRA_KEYSPACE = f"{CASSANDRA_KEYSPACE}_test"
 
 SECONDS_PER_DAY = float(24 * 60 * 60)
-MOCK_REPO_NAME = "test-org/test-repo"
-MOCK_PR_COUNT = 3
 
 def test_get_avg_pr_interval(client, test_session) -> None:
     """Test FastAPI endpoint should fetch Average Pull Request Intervals correctly"""
+
+    MOCK_REPO_NAME = "test-org/test-repo"
+    MOCK_PR_COUNT = 3
 
     now = datetime.now(timezone.utc)
     test_session.execute("""

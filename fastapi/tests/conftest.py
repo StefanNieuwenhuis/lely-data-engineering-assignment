@@ -12,7 +12,7 @@ from src.database import CassandraConnection, get_cassandra_session
 TEST_CASSANDRA_KEYSPACE = f"{CASSANDRA_KEYSPACE}_test"
 TEST_CASSANDRA_HOST = "cassandra"
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="function", autouse=True)
 def setup_test_keyspace():
     """
     Creates (and later drops) a test Cassandra keyspace.
@@ -38,7 +38,17 @@ def setup_test_keyspace():
                 last_pull_request_ts timestamp,
                 updated_at timestamp
             )
-        """)
+    """)
+
+    session.execute("""
+        CREATE TABLE IF NOT EXISTS event_counts_by_type (
+            type text,
+            bucket_day date,
+            time_bucket timestamp,
+            count int,
+            PRIMARY KEY ((type, bucket_day), time_bucket)
+        ) WITH CLUSTERING ORDER BY (time_bucket DESC);
+    """)
 
     yield # run all tests
 
