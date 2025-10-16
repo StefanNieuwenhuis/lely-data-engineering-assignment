@@ -214,6 +214,8 @@ services:
       - "8000:8000"
     env_file:
       - .env
+    environment:
+      PYTHONPATH: /opt/fastapi/app
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
       interval: 10s
@@ -221,6 +223,7 @@ services:
       retries: 10
     volumes:
       - ./fastapi/app:/opt/fastapi/app
+      - ./fastapi/tests:/opt/fastapi/tests
     networks:
       - shared
 
