@@ -3,7 +3,7 @@ from typing import Dict
 
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import from_json, col
-from pyspark.sql.types import TimestampType, StructType
+from pyspark.sql.types import StructType
 
 log = logging.getLogger(__name__)
 
@@ -16,11 +16,6 @@ class GitHubEventParser:
     ) -> DataFrame:
         """
         Parse Kafka JSON payloads into a typed DataFrame.
-
-        :param df: input DataFrame with a string JSON column named 'value' - e.g. Kafka Stream
-        :param schema: StructType describing the JSON structure
-        :param field_mapping: dict mapping from JSON path to desired column name
-        :return: flattened DataFrame with selected columns renamed
         """
 
         parsed_df = df.select(from_json(col("value").cast("string"), schema).alias("data"))

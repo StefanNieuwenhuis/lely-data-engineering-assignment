@@ -151,6 +151,7 @@ services:
     volumes:
       - ./spark/scripts:/opt/spark/scripts
       - ./spark/app:/opt/spark/app
+      - ./spark/tests:/opt/spark/tests
       - spark_data:/opt/spark/data
       - spark_logs:/opt/spark/spark-events
       - spark_warehouse:/opt/spark/warehouse
@@ -174,6 +175,7 @@ services:
     volumes:
       - ./spark/scripts:/opt/spark/scripts
       - ./spark/app:/opt/spark/app
+      - ./spark/tests:/opt/spark/tests
       - spark_data:/opt/spark/data
       - spark_logs:/opt/spark/spark-events
       - spark_warehouse:/opt/spark/warehouse
