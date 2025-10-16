@@ -8,3 +8,9 @@ CREATE TABLE IF NOT EXISTS github_events.avg_pr_time (
     last_pull_request_ts TIMESTAMP,
     updated_at TIMESTAMP
 );
+
+CREATE TABLE event_counts_by_type (
+    type text,
+    created_at timestamp,
+    PRIMARY KEY (type, created_at)
+);

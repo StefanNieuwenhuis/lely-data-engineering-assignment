@@ -43,7 +43,7 @@ class CassandraSink:
     def write_stream(self,
                      df: DataFrame,
                      table: str,
-                     foreach_batch_fn: Callable[[DataFrame, int], None],
+                     foreach_batch_fn: Callable[[DataFrame, int], None] = None,
                      output_mode: str = "update",
     ) -> "CassandraSink":
         """
@@ -52,9 +52,8 @@ class CassandraSink:
 
         :param df: source DataFrame
         :param table: Cassandra table name
-        :param foreach_batch_fn: foreachBatch function for per-batch upsert logic
+        :param foreach_batch_fn: (optional) foreachBatch function for per-batch upsert logic
         :param output_mode: output mode ('append', 'update', or 'complete')
-        :param checkpoint_subdir: optional subdirectory for checkpointing
         :return: CassandraSink instance (for chaining)
         """
         checkpoint_path = self._construct_checkpoint_path(table)
@@ -66,7 +65,7 @@ class CassandraSink:
         writer = df.writeStream \
             .option("checkpointLocation", checkpoint_path) \
             .outputMode(output_mode) \
-            .foreachBatch(lambda df, batch_id: foreach_batch_fn(df, batch_id))
+            .foreachBatch(lambda data_frame, batch_id: foreach_batch_fn(data_frame, batch_id, table))
 
         query = writer.start()
         self._active_queries.append(query)
