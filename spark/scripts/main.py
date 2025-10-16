@@ -17,15 +17,6 @@ from src.sources import KafkaStreamReader
 from src.processors import GitHubEventParser, AveragePRIntervalProcessor
 from src.sinks import CassandraSink
 
-
-def upsert_to_cassandra(batch_df: DataFrame, batch_id: int, table: str):
-    batch_df.write \
-        .format("org.apache.spark.sql.cassandra") \
-        .option("keyspace", "github_events") \
-        .option("table", table) \
-        .mode("append") \
-        .save()
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(APP_NAME)
 
@@ -39,7 +30,6 @@ def main():
     # Parse Kafka JSON payloads into a typed DataFrame.
     events_df = GitHubEventParser.parse(kafka_stream, github_event_schema, github_event_field_map)
 
-
     # Compute average time intervals between PRs
     avg_pr_df = AveragePRIntervalProcessor().run(events_df, state_schema, output_schema)
 
@@ -48,10 +38,9 @@ def main():
     sink \
         .write_stream(
             events_df.select(col("type"), col("created_at")),
-            "event_counts_by_type",
-            upsert_to_cassandra
+            "event_counts_by_type"
         ) \
-        .write_stream(avg_pr_df, "avg_pr_time", upsert_to_cassandra) \
+        .write_stream(avg_pr_df, "avg_pr_time") \
         .start()
 
 if __name__ == "__main__":
