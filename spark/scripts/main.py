@@ -14,7 +14,7 @@ from src.config import (
 from src.utils import build_spark_session
 from src.schemas import github_event_schema, github_event_field_map, output_schema, state_schema
 from src.sources import KafkaStreamReader
-from src.processors import GitHubEventParser, AveragePRIntervalProcessor
+from src.processors import GitHubEventParser, AveragePRIntervalProcessor, AggregateEventCountsProcessor
 from src.sinks import CassandraSink
 
 logging.basicConfig(level=logging.INFO)
@@ -34,11 +34,14 @@ def main():
     # Compute average time intervals between PRs
     avg_pr_df = AveragePRIntervalProcessor().run(events_df, state_schema, output_schema)
 
+    # (pre-)Compute event counts aggregations
+    aggregate_event_counts_df = AggregateEventCountsProcessor().run(events_df)
+
     # Upsert to Cassandra DB
     sink = CassandraSink("github_events", CHECKPOINT_DIR)
     sink \
-        .write_stream(events_df.select(col("type"), col("created_at")), "event_counts_by_type") \
         .write_stream(avg_pr_df, "avg_pr_time") \
+        .write_stream(aggregate_event_counts_df, "event_counts_by_type") \
         .start()
 
 if __name__ == "__main__":
