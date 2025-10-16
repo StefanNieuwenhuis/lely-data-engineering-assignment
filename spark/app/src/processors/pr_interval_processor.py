@@ -5,12 +5,11 @@ from typing import Any, Iterable
 import pandas as pd
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col
-from pyspark.sql.streaming.state import GroupState, GroupStateTimeout
 
 log = logging.getLogger(__name__)
 
 class AveragePRIntervalProcessor:
-    def update_state(self, key:Any, pdfs:Iterable[pd.DataFrame], state:GroupState)->Iterable[pd.DataFrame]:
+    def update_state(self, key:Any, pdfs:Iterable[pd.DataFrame], state)->Iterable[pd.DataFrame]:
         """
         Compute running average time between PRs per repo
 
@@ -27,7 +26,7 @@ class AveragePRIntervalProcessor:
         if state.exists:
             # Spark already has stored state for this key from previous micro-batches -
             # i.e. Spark already saw PR events for this repo and has stored values.
-            last_ts, pr_count, total_diff = state.get
+            last_ts, pr_count, total_diff = state.get()
         else:
             # new repository: initialize state
             last_ts, pr_count, total_diff = None, 0, 0.0
@@ -88,7 +87,7 @@ class AveragePRIntervalProcessor:
                 "updated_at": pd.Timestamp.utcnow()
             }])
 
-    def run(self, df: DataFrame, state_schema, output_schema, timeout_conf: str = GroupStateTimeout.ProcessingTimeTimeout)-> DataFrame:
+    def run(self, df: DataFrame, state_schema, output_schema, timeout_conf: str = "ProcessingTimeTimeout")-> DataFrame:
         return (
             df
             .filter(col("type") == "PullRequestEvent")
