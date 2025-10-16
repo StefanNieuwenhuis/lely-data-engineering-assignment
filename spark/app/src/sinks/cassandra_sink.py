@@ -13,7 +13,7 @@ from src.utils.validate_checkpoint import validate_checkpoint
 log = logging.getLogger(__name__)
 
 
-def _upsert(batch_df: DataFrame, batch_id: int, table: str):
+def upsert(batch_df: DataFrame, batch_id: int, table: str):
     batch_df.write \
         .format("org.apache.spark.sql.cassandra") \
         .option("keyspace", "github_events") \
@@ -67,7 +67,7 @@ class CassandraSink:
         writer = df.writeStream \
             .option("checkpointLocation", checkpoint_path) \
             .outputMode(output_mode) \
-            .foreachBatch(lambda data_frame, batch_id: _upsert(data_frame, batch_id, table))
+            .foreachBatch(lambda data_frame, batch_id: upsert(data_frame, batch_id, table))
 
         query = writer.start()
         self._active_queries.append(query)
