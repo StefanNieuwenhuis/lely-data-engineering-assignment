@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS github_events.avg_pr_time (
 );
 
 CREATE TABLE event_counts_by_type (
-    event_type text,
+    type text,
     created_at timestamp,
-    PRIMARY KEY (event_type, created_at)
+    PRIMARY KEY (type, created_at)
 );
