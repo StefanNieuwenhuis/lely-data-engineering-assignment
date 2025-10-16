@@ -1,12 +1,13 @@
 from fastapi import FastAPI, APIRouter
 
+from src.routers import event_counts
 from src.routers import avg_pr_interval
 
 app = FastAPI(title="GitHub Events API")
 router = APIRouter()
 
 app.include_router(avg_pr_interval.router)
-
+app.include_router(event_counts.router)
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the GitHub Events API"}
