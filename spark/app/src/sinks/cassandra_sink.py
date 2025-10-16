@@ -12,6 +12,16 @@ from src.utils.validate_checkpoint import validate_checkpoint
 
 log = logging.getLogger(__name__)
 
+
+def upsert(batch_df: DataFrame, batch_id: int, table: str):
+    batch_df.write \
+        .format("org.apache.spark.sql.cassandra") \
+        .option("keyspace", "github_events") \
+        .option("table", table) \
+        .mode("append") \
+        .save()
+
+
 class CassandraSink:
     """
     Generic Cassandra sink for Structured Streaming with support for foreachBatch writes
@@ -31,14 +41,6 @@ class CassandraSink:
         log.info(f"Created checkpoint path: {checkpoint_path}")
 
         return checkpoint_path
-
-    def _upsert(self, batch_df: DataFrame, batch_id: int):
-        batch_df.write \
-            .format("org.apache.spark.sql.cassandra") \
-            .option("keyspace", "github_events") \
-            .option("table", "avg_pr_time") \
-            .mode("append") \
-            .save()
 
     def write_stream(self,
                      df: DataFrame,
@@ -65,7 +67,7 @@ class CassandraSink:
         writer = df.writeStream \
             .option("checkpointLocation", checkpoint_path) \
             .outputMode(output_mode) \
-            .foreachBatch(lambda data_frame, batch_id: foreach_batch_fn(data_frame, batch_id, table))
+            .foreachBatch(lambda data_frame, batch_id: upsert(data_frame, batch_id, table))
 
         query = writer.start()
         self._active_queries.append(query)
