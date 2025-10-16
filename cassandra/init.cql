@@ -9,8 +9,10 @@ CREATE TABLE IF NOT EXISTS github_events.avg_pr_time (
     updated_at TIMESTAMP
 );
 
-CREATE TABLE event_counts_by_type (
+CREATE TABLE IF NOT EXISTS event_counts_by_type (
     type text,
-    created_at timestamp,
-    PRIMARY KEY (type, created_at)
-);
+    bucket_day date, -- group buckets per day to keep partitions small
+    time_bucket timestamp,
+    count int,
+    PRIMARY KEY ((type, bucket_day), time_bucket)
+) WITH CLUSTERING ORDER BY (time_bucket DESC);

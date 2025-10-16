@@ -14,6 +14,12 @@ log = logging.getLogger(__name__)
 
 
 def upsert(batch_df: DataFrame, batch_id: int, table: str):
+    if batch_df.isEmpty():
+        log.info(f"[Batch {batch_id}] empty batch - skipping write.")
+        return
+
+    log.info(f"[Batch {batch_id}]: Writing {batch_df.count()} rows to table '{table}'")
+
     batch_df.write \
         .format("org.apache.spark.sql.cassandra") \
         .option("keyspace", "github_events") \
