@@ -30,16 +30,14 @@ def main():
     # Parse Kafka JSON payloads into a typed DataFrame.
     events_df = GitHubEventParser.parse(kafka_stream, github_event_schema, github_event_field_map)
 
+
     # Compute average time intervals between PRs
     avg_pr_df = AveragePRIntervalProcessor().run(events_df, state_schema, output_schema)
 
     # Upsert to Cassandra DB
     sink = CassandraSink("github_events", CHECKPOINT_DIR)
     sink \
-        .write_stream(
-            events_df.select(col("type"), col("created_at")),
-            "event_counts_by_type"
-        ) \
+        .write_stream(events_df.select(col("type"), col("created_at")), "event_counts_by_type") \
         .write_stream(avg_pr_df, "avg_pr_time") \
         .start()
 
