@@ -1,10 +1,10 @@
 
 import logging
 
+from cassandra.cluster import Session
 from cassandra.query import SimpleStatement
 from fastapi import APIRouter, Depends, Query
 from datetime import datetime, timedelta, timezone, date
-from requests import Session
 
 from src.config import GITHUB_EVENTS_TYPES
 from src.models import AggregatedEventCountsModel

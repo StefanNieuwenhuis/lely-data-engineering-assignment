@@ -9,9 +9,8 @@ CREATE TABLE IF NOT EXISTS github_events.avg_pr_time (
     updated_at TIMESTAMP
 );
 
--- add dummy data to "mitigate" PR event sparseness
 INSERT INTO github_events.avg_pr_time (repo_name, avg_interval_seconds, pr_count, last_pull_request_ts, updated_at)
-VALUES ('microsoft/vscode', 28950.4, 132, '2025-10-16T22:15:00', toTimestamp(now()));
+VALUES ('StefanNieuwenhuis/TestRepository', 28950.4, 132, '2025-10-16T22:15:00', toTimestamp(now()));
 
 CREATE TABLE IF NOT EXISTS event_counts_by_type (
     type text,
