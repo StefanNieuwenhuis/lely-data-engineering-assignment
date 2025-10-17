@@ -74,7 +74,7 @@ This triggers the spark streaming jobs that compute the:
 
 > Note: this runs as continuous task, but its designed to also be scheduled in e.g. Apache Airflow or DataBricks.
 
-## Kafka Ingestion
+### (optional) Kafka Ingestion
 
 To check incoming events in Kafka, run:
 
