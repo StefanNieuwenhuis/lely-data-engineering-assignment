@@ -20,7 +20,7 @@ This project contains a Kafka and PySpark streaming architecture. A [docker-comp
 - Cassandra NoSQL database
 - FastAPI Rest API
 
-A custom-made-by-me Kafka HTTP-Connector polls the GitHub API every `[n]` milliseconds (see [.env.example](./.env.example)) and publishes the response body to a predefined Kafka topic.
+A custom-made-by-me [Kafka HTTP-Connector](https://github.com/StefanNieuwenhuis/kafka-custom-http-connector) polls the GitHub API every `[n]` milliseconds (see [.env.example](./.env.example)) and publishes the response body to a predefined Kafka topic. The connector is installed in [./kafka-connect/custom-plugins/kafka-custom-http-connector](https://github.com/StefanNieuwenhuis/lely-data-engineering-assignment/tree/c959ea1c208118b5416335c8c06ee6206f5b9d72/kafka-connect/custom-plugins/kafka-custom-http-connector), and the config is in [./kafka-connect/connectors-config/kafka-custom-http-connector.json](https://github.com/StefanNieuwenhuis/lely-data-engineering-assignment/blob/c959ea1c208118b5416335c8c06ee6206f5b9d72/kafka-connect/connectors-config/kafka-custom-http-connector.json)
 
 A manually triggered Spark job reads from the Kafka Stream and computes the average time between pull requests, and the total number of events, grouped by event type. This job can be handled by orchestrators like Apache AirFlow, or DataBricks. It writes to Apache Cassandra, a noSql database which the FastAPI Rest API consumes.
 
@@ -125,7 +125,7 @@ The processor is found in [./spark/app/src/processors/aggregate_event_counts_pro
 docker exec -it spark-master pytest /opt/spark/tests -v
 ```
 
-### FastApi
+### FastAPI
 
 ```bash
 docker exec -it fastapi pytest /opt/fastapi/tests -v

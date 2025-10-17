@@ -16,3 +16,4 @@ CREATE TABLE IF NOT EXISTS event_counts_by_type (
     count int,
     PRIMARY KEY ((type, bucket_day), time_bucket)
 ) WITH CLUSTERING ORDER BY (time_bucket DESC);
+
