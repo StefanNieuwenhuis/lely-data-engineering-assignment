@@ -1,7 +1,6 @@
 import logging
 
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col
 
 from src.config import (
     APP_NAME,
@@ -29,7 +28,6 @@ def main():
 
     # Parse Kafka JSON payloads into a typed DataFrame.
     events_df = GitHubEventParser.parse(kafka_stream, github_event_schema, github_event_field_map)
-
 
     # Compute average time intervals between PRs
     avg_pr_df = AveragePRIntervalProcessor().run(events_df, state_schema, output_schema)
