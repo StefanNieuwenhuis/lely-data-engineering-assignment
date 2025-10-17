@@ -2,16 +2,6 @@
 
 Real-Time GitHub Event monitoring with Apache Kafka, PySpark, Cassandra, and FastAPI
 
-
-## Table of Contents
-
-- Architecture
-- Prerequisites & Installation
-- Running the Spark Jobs
-- FastAPI endpoints
-- Unit testing
-
-
 ## Architecture
 
 This project contains a Kafka and PySpark streaming architecture. A [docker-compose](./docker-compose.yaml) file initializes (with all required dependencies):
