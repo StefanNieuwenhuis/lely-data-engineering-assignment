@@ -26,8 +26,6 @@ def setup_test_keyspace():
     session.set_keyspace(TEST_CASSANDRA_KEYSPACE)
     session.row_factory = dict_factory
 
-    print(f"STEFAN, {session.keyspace}")
-
     # Create test table schema (mirror production)
     # See ./cassandra/init.cql for table definitions used in production.
     session.execute("""

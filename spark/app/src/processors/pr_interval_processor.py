@@ -5,6 +5,7 @@ from typing import Any, Iterable
 import pandas as pd
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import col
+from pyspark.sql.types import StructType
 
 log = logging.getLogger(__name__)
 
@@ -12,11 +13,6 @@ class AveragePRIntervalProcessor:
     def update_state(self, key:Any, pdfs:Iterable[pd.DataFrame], state)->Iterable[pd.DataFrame]:
         """
         Compute running average time between PRs per repo
-
-        :param key: the current group identifier
-        :param pdfs: an iterator of one or more pandas DataFrames, each containing new rows for a group in the current micro-batch
-        :param state: state object for this group
-        :return:
         """
         (repo_name,) = key
         # Retrieve or initialize state
@@ -87,7 +83,7 @@ class AveragePRIntervalProcessor:
                 "updated_at": pd.Timestamp.utcnow()
             }])
 
-    def run(self, df: DataFrame, state_schema, output_schema, timeout_conf: str = "ProcessingTimeTimeout")-> DataFrame:
+    def run(self, df: DataFrame, state_schema: StructType, output_schema: StructType, timeout_conf: str = "ProcessingTimeTimeout")-> DataFrame:
         return (
             df
             .filter(col("type") == "PullRequestEvent")

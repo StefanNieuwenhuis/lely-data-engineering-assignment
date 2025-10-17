@@ -1,3 +1,3 @@
-from .cassandra_sink import CassandraSink
+from .cassandra_sink import CassandraSink, upsert
 
-__all__ = ["CassandraSink"]
+__all__ = ["CassandraSink", "upsert"]
