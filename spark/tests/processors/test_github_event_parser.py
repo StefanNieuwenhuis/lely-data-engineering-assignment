@@ -1,7 +1,6 @@
 import pytest
 
 from src.processors import GitHubEventParser
-
 from src.schemas import github_event_schema, github_event_field_map
 
 
