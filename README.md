@@ -80,7 +80,7 @@ This triggers the spark streaming jobs that computes the:
 
 ```bash
 curl -X 'GET' \
-  'http://localhost:8000/v1/avg_pr_interval/apache%2Fairflow' \
+  'http://localhost:8000/v1/avg_pr_interval/StefanNieuwenhuis/TestRepository' \
   -H 'accept: application/json'
 ```
 
