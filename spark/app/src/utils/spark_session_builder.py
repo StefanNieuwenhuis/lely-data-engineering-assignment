@@ -16,7 +16,6 @@ def build_spark_session(app_name: str, spark_master: str, cassandra_host: str) -
         .getOrCreate()
     )
 
-    # TODO: Set Log Level to ERROR
     spark_session.sparkContext.setLogLevel("INFO")
 
     return spark_session
