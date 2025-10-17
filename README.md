@@ -67,10 +67,20 @@ In a new terminal window, run:
 docker exec -it spark-master spark-submit /opt/spark/scripts/main.py
 ```
 
-This triggers the spark streaming jobs that computes the:
+This triggers the spark streaming jobs that compute the:
 
 - Average time between pull requests for a given repository.
 - Total number of events grouped by the event type.
+
+> Note: this runs as continuous task, but its designed to also be scheduled in e.g. Apache Airflow or DataBricks.
+
+## Kafka Ingestion
+
+To check incoming events in Kafka, run:
+
+```bash
+docker exec --workdir /opt/kafka/bin/ -it kafka ./kafka-console-consumer.sh --bootstrap-server localhost:9202 --topic github-events --from-beginning
+```
 
 ### Call FastAPI Rest endpoints
 
