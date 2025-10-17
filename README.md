@@ -1,6 +1,11 @@
 # Lely Data Engineering Assignment
 Monitor activities happening on GitHub
 
+## Architecture
+
+![GitHub Event Stream Processor Architecture Diagram](./assets/ArchitectureDiagram.png)
+
+
 ## Project Folder Structure
 
 ```shell
