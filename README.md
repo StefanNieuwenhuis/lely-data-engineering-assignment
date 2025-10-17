@@ -78,6 +78,8 @@ This triggers the spark streaming jobs that computes the:
 
 #### Get the average time between pull requests for a given repository
 
+> Note: Since PullRequestEvents are **EXTREMELY** sparse, I added a dummy repository `StefanNieuwenhuis/TestRepository`.
+
 ```bash
 curl -X 'GET' \
   'http://localhost:8000/v1/avg_pr_interval/StefanNieuwenhuis/TestRepository' \
