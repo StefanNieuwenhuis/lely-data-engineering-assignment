@@ -54,16 +54,7 @@ class CassandraSink:
                      foreach_batch_fn: Callable[[DataFrame, int], None] = None,
                      output_mode: str = "update",
     ) -> "CassandraSink":
-        """
-        Starts a structured streaming write to Cassandra using either
-        foreachBatch or direct sink mode.
-
-        :param df: source DataFrame
-        :param table: Cassandra table name
-        :param foreach_batch_fn: (optional) foreachBatch function for per-batch upsert logic
-        :param output_mode: output mode ('append', 'update', or 'complete')
-        :return: CassandraSink instance (for chaining)
-        """
+        """Starts a structured streaming write to Cassandra using foreachBatch mode."""
         checkpoint_path = self._construct_checkpoint_path(table)
 
         # Check if the checkpoint path is not corrupted by e.g. the driver crashing mid-drive
