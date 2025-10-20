@@ -34,7 +34,6 @@ async def get_avg_pr_interval(offset_minutes: int = Query(..., description="Offs
     github_events_types = GITHUB_EVENTS_TYPES.split(",")
 
     results = {}
-    # TODO: Use .env for events list
     for event_type in github_events_types:
         stmt = SimpleStatement("""
             SELECT type, count
