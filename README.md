@@ -60,6 +60,8 @@ docker compose up -d
 
 > Note: You might encounter warnings like `pull access denied for spark-image, repository does not exist or may require 'docker login': denied: requested access to the...`. This is normal behaviour since Docker prioritizes its global repository before checking for local `Dockerfile`s.
 
+#### Successful completion
+
 ![Docker Compose has completed](./assets/DockerComposeComplete.png)
 
 ### Submit the Spark Streaming Job
@@ -70,7 +72,7 @@ In a new terminal window, run:
 docker exec -it spark-master spark-submit /opt/spark/scripts/main.py
 ```
 
-This triggers the spark streaming jobs that compute the:
+This triggers the spark streaming jobs that computes the:
 
 - Average time between pull requests for a given repository.
 - Total number of events grouped by the event type.
@@ -148,6 +150,7 @@ curl -X 'GET' \
 | `updated_at` | Timestamp of the last computation update | 
 
 ### Get the total number of events grouped by event type
+
 Use the `offset_minutes` parameter to adjust the offset in the request
 
 ```bash
