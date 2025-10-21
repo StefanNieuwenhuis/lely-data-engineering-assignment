@@ -29,12 +29,17 @@ This setup assumes an up-to-date instance of Docker Desktop with docker compose 
 
 ### Clone the repository and cd into the folder
 
-Download and unzip the repository ZIP-file: 
+Download and unzip the repository ZIP-file: https://github.com/StefanNieuwenhuis/lely-data-engineering-assignment/archive/refs/heads/main.zip
 
-OR
+OR `clone` the repository:
 
 ```bash
 git clone https://github.com/StefanNieuwenhuis/lely-data-engineering-assignment.git
+```
+
+### CD into the directory
+
+```bash
 cd lely-data-engineering-assignment
 ```
 
