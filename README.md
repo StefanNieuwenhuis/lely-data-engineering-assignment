@@ -72,6 +72,34 @@ To check incoming events in Kafka, run:
 docker exec --workdir /opt/kafka/bin/ -it kafka ./kafka-console-consumer.sh --bootstrap-server localhost:9202 --topic github-events --from-beginning
 ```
 
+### (optional) Cassandra Database Console
+
+To open the `cqlsh` console to check the Cassandra database, run:
+
+```bash
+docker exec -it cassandra cqlsh
+```
+
+Then run 
+
+```sql
+USE github_events;
+```
+
+to connect to the correct Keyspace. 
+
+Check average time between pull requests:
+
+```sql
+SELECT * FROM avg_pr_time;
+```
+
+Check events grouped by event type:
+
+```sql
+SELECT * FROM event_counts_by_type;
+```
+
 ### Call FastAPI Rest endpoints
 
 > Swagger docs are found here http://localhost:8000/docs
@@ -87,6 +115,7 @@ curl -X 'GET' \
 ```
 
 ### Get the total number of events grouped by event type
+Use the `offset_minutes` parameter to adjust the offset in the request
 
 ```bash
 curl -X 'GET' \
