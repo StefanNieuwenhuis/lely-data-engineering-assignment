@@ -29,6 +29,10 @@ This setup assumes an up-to-date instance of Docker Desktop with docker compose 
 
 ### Clone the repository and cd into the folder
 
+Download and unzip the repository ZIP-file: 
+
+OR
+
 ```bash
 git clone https://github.com/StefanNieuwenhuis/lely-data-engineering-assignment.git
 cd lely-data-engineering-assignment
@@ -48,6 +52,10 @@ Open `.env` and edit values like `GITHUB_AUTH_TOKEN_CLASSIC`
 ```bash
 docker compose up -d
 ```
+
+> Note: You might encounter warnings like `pull access denied for spark-image, repository does not exist or may require 'docker login': denied: requested access to the...`. This is normal behaviour since Docker prioritizes its global repository before checking for local `Dockerfile`s.
+
+![Docker Compose has completed](./assets/DockerComposeComplete.png)
 
 ### Submit the Spark Streaming Job
 
@@ -114,6 +122,26 @@ curl -X 'GET' \
   -H 'accept: application/json'
 ```
 
+##### Output JSON
+
+```json
+{
+  "repo_name": "StefanNieuwenhuis/TestRepository",
+  "avg_interval_seconds": 28950.4,
+  "last_pull_request_ts": "2025-10-16T22:15:00",
+  "pr_count": 132,
+  "updated_at": "2025-10-21T08:06:53.050000"
+}
+```
+
+| field | description |
+|-------|-------------|
+| `repo_name` | The repository of interest |
+| ` avg_interval_seconds` | The interval between pull requests in seconds |
+| `last_pull_request_ts` | Timestamp of the last pull request created in the repository |
+| `pr_count` | The total number of Pull Requests in the repository |
+| `updated_at` | Timestamp of the last computation update | 
+
 ### Get the total number of events grouped by event type
 Use the `offset_minutes` parameter to adjust the offset in the request
 
@@ -122,6 +150,27 @@ curl -X 'GET' \
   'http://localhost:8000/v1/agg_event_counts?offset_minutes=10' \
   -H 'accept: application/json'
 ```
+
+
+#### Output JSON
+
+```json
+{
+  "counts": {
+    "PushEvent": 97,
+    "PullRequestEvent": 0,
+    "IssuesEvent": 0
+  },
+  "start_time": "2025-10-21T08:06:12.534990Z",
+  "end_time": "2025-10-21T08:16:12.534990Z"
+}
+```
+
+| field | description |
+|-------|-------------|
+| `counts` | Counts for each event type of interest (i.e. `PushEvent`, `PullRequestEvent`, `IssueEvent`) |
+| ` start_time` | Timestamp for the offset start |
+| `end_time` | Timestamp for the offset end |
 
 ## Where does the code live?
 
